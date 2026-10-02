@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>بوصلة ملحم</title>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#F5F3F6;--surface:#fff;--ink:#1E1823;--muted:#665F6D;--line:#E3DEE6;--brand:#C4117C;--brand-ink:#fff;--green:#3F8523;--amber:#B87A06;--blue:#1F7FA3;--grey:#857E8B;--soft:#F9E7F2;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#17131A;--surface:#221C27;--ink:#F2EDF4;--muted:#A69FAD;--line:#3A323F;--brand:#E63FA0;--brand-ink:#1A0A14;--green:#7CC25A;--amber:#F0B53C;--blue:#5CBBDD;--grey:#8D8694;--soft:#3A1F31}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;line-height:1.6;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:780px;margin:0 auto;padding:0 14px 60px}
+header{display:flex;align-items:center;gap:10px;padding:14px 0 8px}
+.logo{font-family:"Alexandria",sans-serif;font-weight:800;font-size:1.5rem;line-height:1.2}
+.logo small{display:block;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:.78rem;font-weight:600;color:var(--brand)}
+.who{margin-inline-start:auto;font-size:.82rem;color:var(--muted);text-align:end}
+nav{display:flex;gap:6px;overflow-x:auto;padding:6px 0 12px}
+nav button,.chips button{flex:none;font:inherit;font-size:.88rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:20px;padding:6px 14px;cursor:pointer}
+nav button.on,.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+h2{font-size:1.1rem;margin:16px 0 8px}
+.hint{color:var(--muted);font-size:.9rem;margin:4px 0 12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card.click{cursor:pointer}
+.top{display:flex;gap:10px;align-items:flex-start}
+.tier{flex:none;width:44px;height:44px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;color:#fff;line-height:1.1}
+.tier small{font-size:.65rem;font-weight:500}
+.tA{background:#B30F71}.tB{background:#9A6504}.tC{background:#6E6775}
+.name{font-weight:600;font-size:1.05rem}
+.phone{direction:ltr;unicode-bidi:embed;color:var(--muted);font-size:.9rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
+.chip{background:var(--soft);color:var(--brand);border-radius:20px;padding:1px 10px;font-size:.8rem;font-weight:500}
+.chip.s{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.chip.t{background:transparent;border:1px solid var(--blue);color:var(--blue)}
+.chip.w{background:transparent;border:1px dashed var(--amber);color:var(--amber)}
+.note{font-size:.88rem;color:var(--muted);border-inline-start:3px solid var(--line);padding-inline-start:10px;margin:10px 0;max-height:6em;overflow:auto;white-space:pre-wrap}
+summary{cursor:pointer;font-size:.88rem;color:var(--blue);font-weight:500;margin:6px 0}
+textarea,input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+input[type=checkbox]{width:auto}
+textarea{min-height:120px;resize:vertical;font-size:.92rem}
+label.f{display:block;font-size:.88rem;font-weight:500;margin:12px 0 4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer;text-decoration:none;text-align:center;min-height:44px;display:inline-block}
+.btn.main{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.grow{flex:1 1 100px}
+.btn.g{border-color:var(--green);color:var(--green)}.btn.a{border-color:var(--amber);color:var(--amber)}.btn.x{color:var(--muted)}
+.btn.sm{padding:6px 10px;min-height:36px;font-size:.84rem;font-weight:500}
+.btn:focus-visible,nav button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin-bottom:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+.stat b{display:block;font-size:1.4rem;line-height:1.2}.stat span{font-size:.8rem;color:var(--muted)}
+.done{font-size:.85rem;color:var(--muted);margin-top:8px}
+.center{text-align:center;padding:40px 16px}
+.tbl{overflow-x:auto}table{border-collapse:collapse;font-size:.82rem;width:100%}td,th{border:1px solid var(--line);padding:4px 8px;text-align:start;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:10px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <svg width="46" height="46" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="94" r="80" fill="#1E1823"/><polygon points="150,150 172,190 118,170" fill="#1E1823"/><g transform="rotate(-40 100 94)"><polygon points="100,42 119,94 81,94" fill="#E0218F"/><polygon points="100,146 119,94 81,94" fill="#fff"/></g><circle cx="100" cy="94" r="7" fill="#1E1823"/></svg>
+  <div class="logo">بوصلة<small>ملحم العقارية</small></div>
+  <div class="who" id="who"></div>
+</header>
+<nav id="nav"></nav>
+<main id="main"><div class="center hint">جارٍ التحميل...</div></main>
+</div>
+<input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+<div id="toast" role="status"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,collection} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyCbwrzucjleqjWFfBPgHi7U2u1sKjygLL0",
+  authDomain:"bousala-melhem.firebaseapp.com",
+  projectId:"bousala-melhem",
+  storageBucket:"bousala-melhem.firebasestorage.app",
+  messagingSenderId:"44113097042",
+  appId:"1:44113097042:web:0c4e7fd7567401f25bca8b"
+});
+const auth=getAuth(app), db=getFirestore(app);
+
+/* ---------- القواعد الافتراضية (قابلة للتعديل من تبويب قواعد التحليل) ---------- */
+const HI='مرحباً {الاسم}، معك {الموظف} من ملحم العقارية.\n';
+const DEFAULT_CFG={
+  tA:50,tB:25,footer:'لإيقاف الرسائل أرسل: إيقاف',
+  defTpl:HI+'سبق وتواصلت معنا بخصوص {المشروع}. حابين نعرف وين وصلت بقرارك حتى نخدمك بالشكل المناسب:\n\n1️⃣ ما زلت مهتم وأرغب بالتفاصيل\n2️⃣ مهتم لكن ليس الآن\n3️⃣ غير مهتم حالياً',
+  sw:[{k:'لم يحضر',w:40},{k:'قيد متابعة',w:35},{k:'تم تحديد موعد',w:35},{k:'فرصة مستقبلية',w:30},{k:'استفسار',w:15},{k:'لم يرد',w:10},{k:'غير معني',w:0}],
+  cats:[
+   {id:'visit',label:'طلب زيارة أو موعد',w:30,kw:'زيارة، موعد، معاينة، يزور، جولة، يشوف المشروع',tpl:HI+'سبق وتحدثنا عن زيارة {المشروع}. هل يناسبك أن نحدد موعداً قريباً؟'},
+   {id:'finance',label:'يجهّز تمويلاً بنكياً',w:25,kw:'بنك، قرض، تمويل، مرابحة، اوراق',tpl:HI+'حبيت أتابع معك بخصوص {المشروع}. وين وصلت بموضوع التمويل؟ وإذا في شيء نقدر نساعدك فيه خبّرني.'},
+   {id:'price',label:'سأل عن السعر',w:15,kw:'سعر، اسعار، تكلفة، بكم',tpl:HI+'سبق واستفسرت عن أسعار {المشروع}. هل ما زلت مهتماً حتى أرسل لك التفاصيل؟'},
+   {id:'pay',label:'سأل عن الدفع والتقسيط',w:15,kw:'دفعة، قسط، اقساط، تقسيط، مقدم',tpl:HI+'سبق واستفسرت عن آلية الدفع في {المشروع}. هل تحب أشرح لك الخيارات المتاحة حالياً؟'},
+   {id:'size',label:'طلب مساحة أو نوعاً محدداً',w:10,kw:'مساحة، متر، غرف، استوديو، دوبلكس، محل، تجاري',tpl:HI+'كنت تبحث عن مساحة أو نوع محدد في {المشروع}. هل ما زال طلبك قائماً حتى أتابع لك المتوفر؟'},
+   {id:'land',label:'مهتم بأرض',w:10,kw:'ارض، دونم، طابو، سند',tpl:HI+'سبق واستفسرت عن أرض ضمن {المشروع}. هل ما زلت تبحث حتى أتابع معك؟'},
+   {id:'abroad',label:'خارج البلاد',w:10,kw:'مسافر، بالخارج، خارج البلاد، مغترب، ينزل على البلد',tpl:HI+'حبيت أتابع معك بخصوص {المشروع}. هل تحدد موعد قدومك حتى نرتب لك معاينة؟'},
+   {id:'noanswer',label:'لم يرد سابقاً',w:-5,kw:'لم يرد، ما رد، لا يرد، مغلق',tpl:HI+'حاولنا الاتصال بك سابقاً بخصوص {المشروع} ولم نوفق. هل يناسبك التواصل هنا على واتساب؟'},
+   {id:'expensive',label:'اعتراض على السعر',w:-10,kw:'غالي، مرتفع، ميزانية',tpl:HI+'تحدثنا سابقاً عن {المشروع} وكانت الميزانية هي العائق. هل تحب أعرض عليك ما هو متوفر حالياً لنرى إن كان يناسبك؟'},
+   {id:'unavailable',label:'المطلوب غير متوفر',w:-10,kw:'غير متوفر، مش متوفر، لا يوجد',tpl:HI+'سبق وطلبت خياراً لم يكن متوفراً في {المشروع}. هل ما زال طلبك قائماً حتى أتابع لك؟'},
+   {id:'rent',label:'يبحث عن إيجار',w:-20,kw:'ايجار، يستاجر',tpl:HI+'سبق وتواصلت معنا وكنت تبحث عن إيجار. هل ما زلت تبحث، أم أصبح الشراء خياراً مطروحاً؟'},
+   {id:'notint',label:'أبدى عدم اهتمام',w:-40,kw:'غير مهتم، مش مهتم، لا يريد، اشترى',tpl:''}
+  ]};
+const OUT={interested:'قيد متابعة (مهتم)',later:'فرصة مستقبلية',no:'غير معني',noreply:'لم يتجاوب'};
+
+let U=null,CFG=structuredClone(DEFAULT_CFG),BATCHES=[],CUR=null,V='loading',IMP=null,USERS=[],F={tier:'',st:'todo'},more=15,busy=false;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),3000)}
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+const agent=()=>ls('bousala-agent')||((U&&U.displayName)||'').split(' ')[0]||'فريق المبيعات';
+
+/* ---------- التحليل ---------- */
+const norm=s=>String(s||'').toLowerCase().replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
+const kws=c=>String(c.kw||'').split(/[,،\n]+/).map(k=>norm(k).trim()).filter(Boolean);
+function analyze(notes,status){
+  const t=norm(notes),s=norm(status);let sc=10;
+  for(const x of CFG.sw){if(x.k&&s.includes(norm(x.k))){sc=+x.w||0;break}}
+  const hits=CFG.cats.filter(c=>kws(c).some(k=>t.includes(k)));
+  for(const c of hits)sc+=+c.w||0;
+  const pos=hits.filter(c=>c.w>0).sort((a,b)=>b.w-a.w),neg=hits.filter(c=>c.w<=0).sort((a,b)=>a.w-b.w);
+  const top=pos[0]||neg[0];
+  return{sc,tg:hits.map(c=>c.id),cat:top?top.id:'',tier:sc>=CFG.tA?'A':sc>=CFG.tB?'B':'C'};
+}
+function normPhone(raw){
+  let d=String(raw??'').replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/\D/g,'');
+  if(d.startsWith('00'))d=d.slice(2);let m;
+  if((m=d.match(/^(970|972)0?(5\d{8})$/)))return{ph:m[1]+m[2],key:m[2],amb:false};
+  if((m=d.match(/^0?(5\d{8})$/))){const op=m[1].slice(0,2),pal=op==='59'||op==='56';return{ph:(pal?'970':'972')+m[1],key:m[1],amb:pal}}
+  if(d.length>=11&&d.length<=15&&!d.startsWith('0'))return{ph:d,key:d,amb:false};
+  return null;
+}
+function cleanName(n){n=String(n??'').trim().replace(/\s+/g,' ');if(!n||!/\p{L}/u.test(n)||/غير معروف|مجهول|بدون اسم|unknown|no ?name/i.test(n))return'';return n}
+const projList=p=>String(p??'').split(/[,،;\n|]+/).map(s=>s.trim()).filter(Boolean);
+function msg(it){
+  const c=CFG.cats.find(x=>x.id===it.cat);const tpl=(c&&c.tpl)||CFG.defTpl;
+  const pl=projList(it.pr),p=pl.length===1?pl[0]:'مشاريعنا';
+  let t=it.n?tpl.split('{الاسم}').join(it.n):tpl.replace(/\s*\{الاسم\}/g,'');
+  t=t.split('{المشروع}').join(p).split('{الموظف}').join(agent());
+  return CFG.footer?t+'\n\n'+CFG.footer:t;
+}
+const tagLabel=id=>(CFG.cats.find(c=>c.id===id)||{}).label||id;
+
+/* ---------- Firestore ---------- */
+async function loadBatches(){const s=await getDocs(collection(db,'batches'));BATCHES=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))}
+async function openBatch(id){
+  const meta=BATCHES.find(b=>b.id===id);const s=await getDocs(collection(db,'batches',id,'chunks'));const items=[];
+  s.forEach(d=>{const m=d.data().items||{};for(const cid in m)items.push({...m[cid],cid,ch:d.id})});
+  items.sort((a,b)=>a.i-b.i);CUR={id,meta,items};F={tier:'',st:'todo'};more=15;V='batch';
+}
+async function patch(it,p){
+  Object.assign(it,p);const u={};for(const k in p)u['items.'+it.cid+'.'+k]=p[k];
+  try{await updateDoc(doc(db,'batches',CUR.id,'chunks',it.ch),u)}catch(e){toast('تعذّر الحفظ. تحقق من الاتصال')}
+}
+async function saveChunks(id,items){
+  const n=Math.ceil(items.length/200);
+  for(let i=0;i<n;i++){const m={};items.slice(i*200,i*200+200).forEach(it=>{const{cid,ch,...rest}=it;m['c'+rest.i]=rest});await setDoc(doc(db,'batches',id,'chunks',String(i)),{items:m})}
+  return n;
+}
+const tierCount=items=>({A:items.filter(x=>x.tier==='A').length,B:items.filter(x=>x.tier==='B').length,C:items.filter(x=>x.tier==='C').length});
+
+/* ---------- الاستيراد ---------- */
+function readFile(f){
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const wb=XLSX.read(new Uint8Array(r.result),{type:'array'});
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:'',raw:true}).filter(x=>x.some(v=>String(v).trim()!==''));
+    if(rows.length<2){toast('الملف فارغ');return}
+    const rx={name:/اسم|name/i,phone:/هاتف|رقم|جوال|موبايل|phone|mobile|tel/i,project:/مشروع|مشاريع|project/i,notes:/ملاحظ|note/i,status:/حال|تصنيف|status/i};
+    let h=0;for(let i=0;i<Math.min(10,rows.length);i++){if(rows[i].some(v=>rx.phone.test(String(v)))){h=i;break}}
+    const headers=rows[h].map((v,i)=>String(v).trim()||('عمود '+(i+1)));const map={};
+    for(const k in rx)map[k]=headers.findIndex(x=>rx[k].test(x));
+    IMP={headers,rows:rows.slice(h+1),map,name:f.name.replace(/\.[^.]+$/,''),sel:null};setSel();V='wizard';render();
+  }catch(e){toast('تعذّرت قراءة الملف. تأكد أنه Excel أو CSV')}};
+  r.readAsArrayBuffer(f);
+}
+const cell=(r,i)=>i>=0?String(r[i]??'').trim():'';
+function statusCounts(){const c={};if(IMP.map.status<0)return c;for(const r of IMP.rows){const s=cell(r,IMP.map.status)||'(بدون حالة)';c[s]=(c[s]||0)+1}return c}
+function setSel(){IMP.sel=new Set(Object.keys(statusCounts()).filter(s=>/استفسار|فرصة|لم يحضر/.test(s)))}
+async function doImport(){
+  const{rows,map}=IMP;if(map.phone<0){toast('اختر عمود رقم الهاتف');return}
+  if(map.status>=0&&!IMP.sel.size){toast('اختر حالة واحدة على الأقل');return}
+  const seen=new Set();let items=[],dup=0;
+  for(const r of rows){
+    const st=cell(r,map.status);if(map.status>=0&&!IMP.sel.has(st||'(بدون حالة)'))continue;
+    const raw=cell(r,map.phone),p=normPhone(raw);const nm=cleanName(cell(r,map.name));
+    if(!p&&!raw&&!nm)continue;
+    if(p){if(seen.has(p.key)){dup++;continue}seen.add(p.key)}
+    const no=cell(r,map.notes).slice(0,700);
+    items.push({n:nm,ph:p?p.ph:'',raw:p?'':raw,amb:!!(p&&p.amb),pr:cell(r,map.project),no,st,o:'',sent:'',by:'',...analyze(no,st)});
+  }
+  if(!items.length){toast('لا يوجد عملاء مطابقون للاختيار');return}
+  items.sort((a,b)=>b.sc-a.sc);items.forEach((it,i)=>it.i=i);
+  busy=true;render();
+  try{
+    const ref=doc(collection(db,'batches'));const chunks=await saveChunks(ref.id,items);
+    await setDoc(ref,{name:IMP.name||'ملف',createdBy:U.email,createdAt:Date.now(),total:items.length,chunks,...tierCount(items)});
+    await loadBatches();await openBatch(ref.id);IMP=null;toast(`حُلّل ${items.length} عميل، وحُذف ${dup} مكرر`);
+  }catch(e){toast('تعذّر الحفظ في قاعدة البيانات')}
+  busy=false;render();
+}
+function exportXlsx(){
+  const aoa=[['الترتيب','الأولوية','الدرجة','الاسم','رقم الهاتف','المشاريع','الحالة في CRM','نتيجة التحليل','الملاحظات','الرسالة المقترحة','نتيجة التواصل','تاريخ الإرسال','بواسطة']];
+  CUR.items.forEach((it,i)=>aoa.push([i+1,it.tier,it.sc,it.n,it.ph||it.raw,it.pr,it.st,it.tg.map(tagLabel).join('، '),it.no,msg(it),OUT[it.o]||'',it.sent,it.by]));
+  const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:7},{wch:8},{wch:7},{wch:22},{wch:16},{wch:22},{wch:16},{wch:28},{wch:40},{wch:50},{wch:18},{wch:12},{wch:22}];
+  XLSX.utils.book_append_sheet(wb,ws,'مرتب بالأولوية');XLSX.writeFile(wb,'بوصلة-'+(CUR.meta.name||'ملف')+'-'+today()+'.xlsx');
+}
+
+/* ---------- العرض ---------- */
+function nav(){
+  const on=V==='batch'||V==='wizard'?'home':V;
+  $('#nav').innerHTML=U&&['home','rules','users'].includes(on)?[['home','الملفات'],['rules','قواعد التحليل'],['users','المستخدمون']].map(x=>`<button data-v="${x[0]}" class="${on===x[0]?'on':''}">${x[1]}</button>`).join('')+'<button data-a="logout">خروج</button>':'';
+  $('#who').textContent=U?U.email:'';
+}
+function vHome(){
+  return `<div class="row" style="margin:0 0 14px"><label class="btn main" for="file">رفع ملف شهري جديد</label></div>`+
+  (BATCHES.length?BATCHES.map(b=>`<div class="card click" data-a="open" data-id="${b.id}"><div class="name">${esc(b.name)}</div>
+   <div class="meta"><span class="chip s">${b.total} عميل</span><span class="chip">أولوية عالية ${b.A||0}</span><span class="chip s">متوسطة ${b.B||0}</span><span class="chip s">منخفضة ${b.C||0}</span></div>
+   <div class="done">رفعه ${esc(b.createdBy||'')} بتاريخ ${new Date(b.createdAt).toLocaleDateString('ar')}</div></div>`).join('')
+  :`<div class="card center"><h2>لا توجد ملفات بعد</h2><p class="hint">ارفع ملف Excel مصدَّراً من CRM لشهر معين. يحتاج أعمدة: الاسم، رقم الهاتف، المشاريع، الملاحظات، والحالة.</p></div>`);
+}
+function vWizard(){
+  const{headers,rows,map}=IMP;const sc=statusCounts();
+  const sel=(k,l)=>`<label class="f">${l}</label><select data-map="${k}"><option value="-1">بدون</option>${headers.map((h,i)=>`<option value="${i}" ${map[k]===i?'selected':''}>${esc(h)}</option>`).join('')}</select>`;
+  return `<h2>تجهيز الملف</h2><p class="hint">وُجد ${rows.length} صف.</p>
+  <div class="card"><label class="f">اسم الملف في بوصلة</label><input id="bname" value="${esc(IMP.name)}">
+  ${sel('name','عمود الاسم')}${sel('phone','عمود رقم الهاتف (مطلوب)')}${sel('project','عمود المشاريع')}${sel('notes','عمود الملاحظات')}${sel('status','عمود الحالة')}</div>
+  ${map.status>=0?`<h2>الحالات التي تريد تحليلها</h2><div class="card">${Object.keys(sc).sort((a,b)=>sc[b]-sc[a]).map(s=>`<label style="display:block;padding:4px 0"><input type="checkbox" data-st="${esc(s)}" ${IMP.sel.has(s)?'checked':''}> ${esc(s)} (${sc[s]})</label>`).join('')}</div>`
+   :'<p class="hint">لم يُحدَّد عمود للحالة، فسيُحلَّل كل الملف.</p>'}
+  <div class="row"><button class="btn main grow" data-a="import" ${busy?'disabled':''}>${busy?'جارٍ التحليل والحفظ...':'تحليل وترتيب'}</button><button class="btn" data-a="home">إلغاء</button></div>
+  <h2>معاينة</h2><div class="tbl"><table><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${rows.slice(0,3).map(r=>`<tr>${headers.map((_,i)=>`<td>${esc(r[i])}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+function vBatch(){
+  const it=CUR.items,n={todo:0,sent:0,done:0};
+  for(const x of it)n[x.o?'done':x.sent?'sent':'todo']++;
+  const oc=k=>it.filter(x=>x.o===k).length;
+  let list=it.filter(x=>(!F.tier||x.tier===F.tier)&&(F.st==='all'||(F.st==='todo'&&!x.o&&!x.sent)||(F.st==='sent'&&x.sent&&!x.o)||(F.st==='done'&&x.o)));
+  const chip=(g,v,l)=>`<button data-f="${g}" data-val="${v}" class="${F[g]===v?'on':''}">${l}</button>`;
+  return `<div class="row" style="margin:0 0 10px"><button class="btn sm" data-a="home">رجوع للملفات</button><button class="btn sm" data-a="export">تنزيل الملف المرتب Excel</button><button class="btn sm" data-a="reanalyze">إعادة التحليل</button><button class="btn sm x" data-a="delbatch">${V_del?'اضغط للتأكيد':'حذف الملف'}</button></div>
+  <h2>${esc(CUR.meta.name)}</h2>
+  <div class="stats"><div class="stat"><b>${it.length}</b><span>الإجمالي</span></div><div class="stat"><b>${n.sent+n.done}</b><span>تم التواصل</span></div><div class="stat"><b>${oc('interested')}</b><span>مهتم</span></div><div class="stat"><b>${oc('later')}</b><span>ليس الآن</span></div><div class="stat"><b>${oc('no')+oc('noreply')}</b><span>غير معني</span></div></div>
+  <div class="chips">${chip('st','todo','بانتظار التواصل '+n.todo)}${chip('st','sent','بانتظار الرد '+n.sent)}${chip('st','done','مصنّف '+n.done)}${chip('st','all','الكل')}</div>
+  <div class="chips">${chip('tier','','كل الأولويات')}${chip('tier','A','عالية')}${chip('tier','B','متوسطة')}${chip('tier','C','منخفضة')}</div>
+  ${list.length?list.slice(0,more).map(card).join(''):'<div class="card center hint">لا يوجد عملاء في هذا التصنيف.</div>'}
+  ${list.length>more?`<button class="btn" data-a="more">عرض المزيد (${list.length-more})</button>`:''}`;
+}
+let V_del=false;
+function card(x){
+  const tl={A:'عالية',B:'متوسطة',C:'منخفضة'}[x.tier];
+  return `<div class="card"><div class="top"><div class="tier t${x.tier}">${x.sc}<small>${tl}</small></div><div style="flex:1;min-width:0">
+   <div class="name">${x.n?esc(x.n):'بدون اسم'}</div>
+   <div class="meta">${x.ph?`<span class="phone">+${esc(x.ph)}</span>`:`<span class="chip w">رقم يحتاج مراجعة: ${esc(x.raw)}</span>`}${x.amb?'<span class="chip w">المقدمة غير مؤكدة</span>':''}${x.st?`<span class="chip s">${esc(x.st)}</span>`:''}${projList(x.pr).map(p=>`<span class="chip">${esc(p)}</span>`).join('')}</div>
+   <div class="meta">${x.tg.length?x.tg.map(t=>`<span class="chip t">${esc(tagLabel(t))}</span>`).join(''):'<span class="chip s">لا إشارات في الملاحظة</span>'}</div></div></div>
+   ${x.no?`<div class="note">${esc(x.no)}</div>`:''}
+   <details ${x.tier==='A'&&!x.sent?'open':''}><summary>الرسالة المقترحة</summary><textarea id="m-${x.cid}">${esc(msg(x))}</textarea></details>
+   ${x.ph?`<div class="row"><a class="btn main grow" href="#" target="_blank" rel="noopener" data-a="send" data-c="${x.cid}">إرسال عبر واتساب</a><a class="btn grow" href="tel:+${x.ph}" data-a="called" data-c="${x.cid}">اتصال</a>${x.amb?`<button class="btn sm" data-a="swap" data-c="${x.cid}">تبديل إلى ${x.ph.startsWith('970')?'972':'970'}</button>`:''}</div>`:''}
+   <div class="row"><button class="btn g grow sm" data-a="out" data-o="interested" data-c="${x.cid}">مهتم</button><button class="btn a grow sm" data-a="out" data-o="later" data-c="${x.cid}">ليس الآن</button><button class="btn x grow sm" data-a="out" data-o="no" data-c="${x.cid}">غير معني</button><button class="btn x grow sm" data-a="out" data-o="noreply" data-c="${x.cid}">لم يتجاوب</button></div>
+   ${x.sent||x.o?`<div class="done">${x.sent?'تم التواصل '+esc(x.sent):''}${x.o?' · النتيجة: '+esc(OUT[x.o]):''}${x.by?' · '+esc(x.by):''} <button class="btn sm" data-a="undo" data-c="${x.cid}">تراجع</button></div>`:''}</div>`;
+}
+function vRules(){
+  return `<p class="hint">هذه القواعد مشتركة بين كل المستخدمين. بعد تعديلها اضغط "حفظ القواعد"، ثم "إعادة التحليل" داخل أي ملف لتطبيقها عليه.</p>
+  <div class="card"><label class="f">اسمك كما يظهر في الرسائل (خاص بك على هذا الجهاز)</label><input id="agent" value="${esc(agent())}">
+   <label class="f">سطر ختام الرسالة</label><input data-cfg="footer" value="${esc(CFG.footer)}">
+   <label class="f">الحد الأدنى لدرجة الأولوية العالية</label><input type="number" data-cfg="tA" value="${CFG.tA}">
+   <label class="f">الحد الأدنى لدرجة الأولوية المتوسطة</label><input type="number" data-cfg="tB" value="${CFG.tB}"></div>
+  <h2>درجة كل حالة في CRM</h2><p class="hint">تُطبَّق أول قاعدة يطابق نصها حالة العميل. الحالة غير المذكورة تأخذ 10.</p>
+  <div class="card">${CFG.sw.map((s,i)=>`<div class="row" style="margin-top:6px"><input style="flex:2" data-sw="${i}" data-k="k" value="${esc(s.k)}"><input style="flex:1" type="number" data-sw="${i}" data-k="w" value="${s.w}"></div>`).join('')}<div class="row"><button class="btn sm" data-a="addsw">إضافة حالة</button></div></div>
+  <h2>إشارات الملاحظات ورسائلها</h2><p class="hint">كل إشارة: كلمات تُبحث في الملاحظة، ودرجة تُضاف (أو تُطرح إن كانت سالبة)، ورسالة مقترحة. الرموز: {الاسم} {المشروع} {الموظف}</p>
+  ${CFG.cats.map((c,i)=>`<div class="card"><label class="f">اسم الإشارة</label><input data-cat="${i}" data-k="label" value="${esc(c.label)}">
+   <label class="f">الدرجة</label><input type="number" data-cat="${i}" data-k="w" value="${c.w}">
+   <label class="f">الكلمات (مفصولة بفاصلة)</label><input data-cat="${i}" data-k="kw" value="${esc(c.kw)}">
+   <label class="f">الرسالة المقترحة (فارغة = الرسالة العامة)</label><textarea data-cat="${i}" data-k="tpl">${esc(c.tpl)}</textarea>
+   <div class="row"><button class="btn sm x" data-a="delcat" data-i="${i}">حذف الإشارة</button></div></div>`).join('')}
+  <div class="row"><button class="btn sm" data-a="addcat">إضافة إشارة</button></div>
+  <h2>الرسالة العامة</h2><div class="card"><textarea data-cfg="defTpl">${esc(CFG.defTpl)}</textarea></div>
+  <div class="row"><button class="btn main grow" data-a="savecfg">حفظ القواعد</button></div>`;
+}
+function vUsers(){
+  return `<p class="hint">كل من في هذه القائمة يدخل بحساب Google ويملك نفس الصلاحيات كاملة، بما فيها إضافة وحذف المستخدمين.</p>
+  <div class="card"><label class="f">إضافة مستخدم ببريده (حساب Google)</label><input id="newmail" type="email" dir="ltr" placeholder="name@gmail.com"><div class="row"><button class="btn main" data-a="adduser">إضافة</button></div></div>
+  ${USERS.map(u=>`<div class="card"><div class="phone" style="font-size:1rem;color:var(--ink)">${esc(u)}</div>${u===U.email.toLowerCase()?'<div class="done">أنت</div>':`<div class="row"><button class="btn sm x" data-a="deluser" data-u="${esc(u)}">حذف</button></div>`}</div>`).join('')}`;
+}
+function render(){
+  nav();const m=$('#main');
+  if(V==='loading')m.innerHTML='<div class="center hint">جارٍ التحميل...</div>';
+  else if(V==='login')m.innerHTML='<div class="card center"><h2>تدلّك على العميل الأجدر بالاتصال</h2><p class="hint">سجّل الدخول بحساب Google المصرّح له.</p><button class="btn main" data-a="login">الدخول بحساب Google</button></div>';
+  else if(V==='noaccess')m.innerHTML=`<div class="card center"><h2>هذا الحساب غير مصرّح له</h2><p class="hint">البريد <span dir="ltr">${esc(U.email)}</span> ليس في قائمة المستخدمين. اطلب من أحد المستخدمين إضافته من تبويب "المستخدمون".</p><button class="btn" data-a="logout">الخروج وتجربة حساب آخر</button></div>`;
+  else m.innerHTML=({home:vHome,wizard:vWizard,batch:vBatch,rules:vRules,users:vUsers}[V])();
+}
+
+/* ---------- الأحداث ---------- */
+const item=c=>CUR.items.find(x=>x.cid===c);
+document.addEventListener('click',async ev=>{
+  const t=ev.target.closest('[data-a],[data-v],[data-f]');if(!t)return;
+  if(t.dataset.v){V=t.dataset.v;if(V==='users'){try{USERS=(await getDocs(collection(db,'allowed'))).docs.map(d=>d.id).sort()}catch(e){toast('تعذّر تحميل المستخدمين')}}render();return}
+  if(t.dataset.f){F[t.dataset.f]=t.dataset.val;more=15;render();return}
+  const a=t.dataset.a,x=t.dataset.c?item(t.dataset.c):null;
+  switch(a){
+    case 'login':try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){toast('تعذّر تسجيل الدخول. اسمح بالنوافذ المنبثقة وحاول مجدداً')}return;
+    case 'logout':await signOut(auth);return;
+    case 'home':V='home';IMP=null;CUR=null;V_del=false;break;
+    case 'open':V='loading';render();try{await openBatch(t.dataset.id)}catch(e){V='home';toast('تعذّر فتح الملف')}break;
+    case 'import':IMP.name=($('#bname')||{}).value||IMP.name;await doImport();return;
+    case 'more':more+=15;break;
+    case 'export':exportXlsx();return;
+    case 'send':{const ta=$('#m-'+x.cid);t.href='https://wa.me/'+x.ph+'?text='+encodeURIComponent(ta?ta.value:msg(x));
+      setTimeout(async()=>{await patch(x,{sent:today(),by:U.email});render()},400);return}
+    case 'called':setTimeout(async()=>{await patch(x,{sent:today(),by:U.email});render()},400);return;
+    case 'swap':await patch(x,{ph:(x.ph.startsWith('970')?'972':'970')+x.ph.slice(3)});break;
+    case 'out':await patch(x,{o:t.dataset.o,by:U.email,sent:x.sent||today()});break;
+    case 'undo':await patch(x,{o:'',sent:'',by:''});break;
+    case 'reanalyze':{busy=true;toast('جارٍ إعادة التحليل...');
+      for(const it of CUR.items)Object.assign(it,analyze(it.no,it.st));
+      CUR.items.sort((a,b)=>b.sc-a.sc).forEach((it,i)=>it.i=i);
+      try{const chunks=await saveChunks(CUR.id,CUR.items);await updateDoc(doc(db,'batches',CUR.id),{chunks,...tierCount(CUR.items)});await loadBatches();await openBatch(CUR.id);toast('تمت إعادة التحليل')}catch(e){toast('تعذّر الحفظ')}
+      busy=false;break}
+    case 'delbatch':if(!V_del){V_del=true;render();setTimeout(()=>{if(V_del){V_del=false;render()}},4000);return}
+      try{const s=await getDocs(collection(db,'batches',CUR.id,'chunks'));for(const d of s.docs)await deleteDoc(d.ref);await deleteDoc(doc(db,'batches',CUR.id));await loadBatches();toast('حُذف الملف')}catch(e){toast('تعذّر الحذف')}
+      V_del=false;CUR=null;V='home';break;
+    case 'addsw':CFG.sw.push({k:'',w:10});break;
+    case 'addcat':CFG.cats.push({id:'c'+Date.now(),label:'إشارة جديدة',w:10,kw:'',tpl:''});break;
+    case 'delcat':CFG.cats.splice(+t.dataset.i,1);break;
+    case 'savecfg':try{CFG.sw=CFG.sw.filter(s=>s.k.trim());await setDoc(doc(db,'config','main'),CFG);toast('حُفظت القواعد')}catch(e){toast('تعذّر الحفظ')}break;
+    case 'adduser':{const m=(($('#newmail')||{}).value||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){toast('اكتب بريداً صحيحاً');return}
+      try{await setDoc(doc(db,'allowed',m),{addedBy:U.email,at:Date.now()});if(!USERS.includes(m))USERS.push(m);USERS.sort();toast('أُضيف المستخدم')}catch(e){toast('تعذّرت الإضافة')}break}
+    case 'deluser':try{await deleteDoc(doc(db,'allowed',t.dataset.u));USERS=USERS.filter(u=>u!==t.dataset.u);toast('حُذف المستخدم')}catch(e){toast('تعذّر الحذف')}break;
+  }
+  render();
+});
+document.addEventListener('change',ev=>{
+  const t=ev.target,d=t.dataset;
+  if(t.id==='file'){if(t.files[0])readFile(t.files[0]);t.value='';return}
+  if(t.id==='agent'){ls('bousala-agent',t.value.trim());return}
+  if(d.map){IMP.map[d.map]=+t.value;IMP.name=($('#bname')||{}).value||IMP.name;if(d.map==='status')setSel();render();return}
+  if(d.st!==undefined){t.checked?IMP.sel.add(d.st):IMP.sel.delete(d.st);return}
+  if(d.cfg){CFG[d.cfg]=t.type==='number'?(+t.value||0):t.value;return}
+  if(d.sw!==undefined){CFG.sw[+d.sw][d.k]=d.k==='w'?(+t.value||0):t.value;return}
+  if(d.cat!==undefined){CFG.cats[+d.cat][d.k]=d.k==='w'?(+t.value||0):t.value;return}
+});
+
+onAuthStateChanged(auth,async u=>{
+  U=u;if(!u){V='login';render();return}
+  V='loading';render();
+  try{
+    const ok=await getDoc(doc(db,'allowed',(u.email||'').toLowerCase()));
+    if(!ok.exists()){V='noaccess';render();return}
+    const c=await getDoc(doc(db,'config','main'));if(c.exists())CFG=Object.assign(structuredClone(DEFAULT_CFG),c.data());
+    await loadBatches();V='home';
+  }catch(e){V='noaccess'}
+  render();
+});
+</script>
+</body>
+</html>
